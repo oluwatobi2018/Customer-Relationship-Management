@@ -1,5 +1,10 @@
 package main
 
+import (
+	"database/sql"
+	"log"
+)
+
 // User ...
 type User struct {
 	ID       int    `json:"id"`
@@ -20,4 +25,19 @@ type Addr struct {
 	Street  string `json:"street"`
 	City    string `json:"city"`
 	Country string `json:"country"`
+}
+
+func createUserTable(db *sql.DB) {
+	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS users (
+		id SERIAL PRIMARY KEY,
+		name character varying(256),
+		email character varying(256)
+	);`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = db.Exec("CREATE UNIQUE INDEX IF NOT EXISTS users_pkey ON users(id int4_ops);")
+	if err != nil {
+		log.Fatal(err)
+	}
 }
