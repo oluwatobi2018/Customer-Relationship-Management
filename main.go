@@ -3,5 +3,7 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Printf("QQQ\n")
+	db := NewStorage()
+
+	fmt.Printf("%#v\n", db)
 }
