@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+
+	_ "github.com/lib/pq"
 )
 
 // Storage ...
@@ -36,7 +38,7 @@ func NewStorage() Storage {
 func (s *Storage) connect() {
 	conn := getENV()
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", conn.host, conn.port, conn.user, conn.pass, conn.dbname, conn.sslmode)
-	db, err := sql.Open("postgress", psqlInfo)
+	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -63,7 +65,7 @@ func getENV() connData {
 	if !ok {
 		log.Fatal("undefuned `DB_PASSWORD`")
 	}
-	conn.dbname, ok = os.LookupEnv("DBNAME")
+	conn.dbname, ok = os.LookupEnv("DB_NAME")
 	if !ok {
 		log.Fatal("undefuned `DB_NAME")
 	}
