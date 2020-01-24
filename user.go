@@ -27,11 +27,23 @@ type Addr struct {
 	Country string `json:"country"`
 }
 
-func createUserTable(db *sql.DB) {
+func createUserTable(db *sql.DB, name string) {
+	switch name {
+	case "users":
+		createUsers(db)
+	case "address":
+		createAddress(db)
+	}
+}
+
+func createUsers(db *sql.DB) {
 	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS users (
 		id SERIAL PRIMARY KEY,
 		name character varying(256),
 		email character varying(256)
+		password character varying(256)
+		password character varying(256)
+		password character varying(256)
 	);`)
 	if err != nil {
 		log.Fatal(err)
@@ -40,4 +52,22 @@ func createUserTable(db *sql.DB) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+}
+
+func createAddress(db *sql.DB) {
+	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS address (
+		id SERIAL PRIMARY KEY,
+		street character varying(256)
+		city character varying(256)
+		country character varying(256)
+	);`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = db.Exec("CREATE UNIQUE INDEX IF NOT EXISTS users_pkey ON users(id int4_ops);")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 }
