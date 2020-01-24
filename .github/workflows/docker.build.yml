@@ -1,0 +1,49 @@
+name: Docker-Image-CI
+
+on: [push]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  DEPLOY_KEY: ${{ secrets.SSH_KEY }}
+  USERNAME: qwertmax
+  IMAGE: go-crm
+  CI: true
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: bump new version
+      run: |
+        git fetch --all --tags
+        version=$(git describe --tags --abbrev=0)
+        echo "version: $version"
+        docker run --rm alpine/semver semver -c -i patch $version > VERSION
+        version=$(cat VERSION)
+        git config --global user.email "qwertmax@gmail.com"
+        git config --global user.name "Maxim Tishchento"
+        git tag -a "$version" -m "version $version"
+        git push --tags
+
+
+    - name: Log into registry
+      run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
+
+    - name: build
+      run: |
+        version=$(cat VERSION)
+        docker build -t $USERNAME/$IMAGE --build-arg VERSION=$(cat VERSION) .
+        docker tag $USERNAME/$IMAGE:latest $USERNAME/$IMAGE:$version
+
+    - name: deploy
+      run: |
+        version=$(cat VERSION)
+        docker push $USERNAME/$IMAGE:latest
+        docker push $USERNAME/$IMAGE:$version
