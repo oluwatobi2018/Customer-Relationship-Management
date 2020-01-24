@@ -40,10 +40,10 @@ func createUsers(db *sql.DB) {
 	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS users (
 		id SERIAL PRIMARY KEY,
 		name character varying(256),
-		email character varying(256)
-		password character varying(256)
-		password character varying(256)
-		password character varying(256)
+		email character varying(256),
+		password character varying(256),
+		position character varying(256),
+		phone character varying(256)
 	);`)
 	if err != nil {
 		log.Fatal(err)
@@ -58,14 +58,14 @@ func createUsers(db *sql.DB) {
 func createAddress(db *sql.DB) {
 	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS address (
 		id SERIAL PRIMARY KEY,
-		street character varying(256)
-		city character varying(256)
+		street character varying(256),
+		city character varying(256),
 		country character varying(256)
 	);`)
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = db.Exec("CREATE UNIQUE INDEX IF NOT EXISTS users_pkey ON users(id int4_ops);")
+	_, err = db.Exec("CREATE UNIQUE INDEX IF NOT EXISTS address_pkey ON address(id int4_ops);")
 	if err != nil {
 		log.Fatal(err)
 	}
