@@ -36,10 +36,15 @@ func main() {
 	// create base Context
 	ctx := context.WithValue(context.Background(), "db", db.DB)
 
-	// users handlers
+	// handlers
+
+	// main
 	http.Handle("/", &ContextInjector{ctx, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("ok"))
 	})})
+
+	// users handlers
+	http.Handle("/user", http.Handler(&ContextInjector{ctx, http.HandlerFunc(UserHandler)}))
 
 	log.Fatal(http.ListenAndServe(host+":"+port, nil))
 }
