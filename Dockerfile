@@ -17,3 +17,4 @@ ENV VERSION=$VERSION
 CMD ["/app/app"]
 
 EXPOSE 80
+
