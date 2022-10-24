@@ -1,1 +1,1 @@
-# go-crm
+# go-crm (Customer Relationship Management)
